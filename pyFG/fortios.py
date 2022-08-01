@@ -157,6 +157,10 @@ class FortiOS(object):
         except:
             pass
         
+        _buf = ""
+        _bufcnt = 0
+        _bufmaxlength = 2048
+        
         for o in output_chan.read():
             _buf = _buf + self._read_wrapper(o)
             _bufcnt += 1
