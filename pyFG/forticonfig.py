@@ -302,6 +302,31 @@ class FortiConfig(object):
         """
         self.sub_blocks.pop(block_name, None)
 
+    def to_dict(self, root=None, tree_dict=None):
+        """
+        This method returns the object model in dict format.
+        Args:
+            - **root** (class:`~pyFG.forticonfig.FortiConfig` object):
+                    * If ``None`` use self as tree root.
+            - **tree_dict** (dict): This value is for output.
+                    * If ``None`` use a blank dict.
+        """
+        if root is None:
+            root = self
+        if tree_dict is None:
+            tree_dict = {}
+        if not hasattr(root, 'get_block_names') or not root.get_block_names():
+            return
+        for child in root.get_block_names():
+            if not tree_dict.get(child):
+                if root[child].get_parameter_names():
+                    tree_dict[child] = {k: root[child].get_param(k).replace('"', '')
+                                        for k in root[child].get_parameter_names()}
+                else:
+                    tree_dict[child] = {}
+            self.to_dict(root[child], tree_dict[child])
+        return tree_dict
+        
     def to_text(self, relative=False, indent_level=0, clean_empty_block=False):
         """
         This method returns the object model in text format. You should be able to copy&paste this text into any
